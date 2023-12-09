@@ -1,7 +1,7 @@
 public class Task {
-    private int id;
-    private String name;
-    private String description;
+    protected int id;
+    protected String name;
+    protected String description;
     protected TaskStatus status;
 
     public Task() {
@@ -44,5 +44,13 @@ public class Task {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString(){
+        return "ID in class = " + this.id + "\n" +
+                "taskName = " + this.name + "\n" +
+                "taskDescription = " + this.description + "\n" +
+                "taskStatus = " + this.status + "\n";
     }
 }

@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.Map;
 
 public class Main {
@@ -11,7 +12,9 @@ public class Main {
         String subTaskName = "subTaskName";
         String subTaskDescription = "subTaskDescription";
 
-        TaskManager taskManager = new TaskManager();
+        //TaskManager taskManager = new InMemoryTaskManager();
+        TaskManager taskManager = Managers.getDefault();
+        //HistoryManager historyManager = new InMemoryHistoryManager();
         for (int i = 0; i < 7; i++)
             taskManager.createNewTask(new Task(taskName + (i + 1), taskDescription + (i + 1), TaskStatus.NEW));
 
@@ -23,6 +26,53 @@ public class Main {
                 taskManager.createNewSubTask(new SubTask(epicKey, subTaskName + (i + 1), subTaskDescription + (i + 1), TaskStatus.NEW));
         }
         show(taskManager);
+
+
+        taskManager.getTaskByID(3);
+        taskManager.getTaskByID(5);
+        taskManager.getTaskByID(7);
+        taskManager.getEpicByID(10);
+        taskManager.getEpicByID(11);
+        taskManager.getSubTaskByID(19);
+        taskManager.getSubTaskByID(20);
+        taskManager.getSubTaskByID(21);
+        taskManager.getSubTaskByID(19);
+        taskManager.getSubTaskByID(20);
+        /*taskManager.getSubTaskByID(22);
+        taskManager.getSubTaskByID(23);
+        taskManager.getSubTaskByID(24);*/
+
+        LinkedList history = taskManager.history();
+        System.out.println("Size " + history.size());
+
+        for (int i = 0; i < history.size(); i++)
+        {
+            System.out.println("Элемент в истории: " + (i + 1));
+            System.out.println(history.get(i).toString());
+        }
+
+        taskManager.getSubTaskByID(21);
+
+        for (int i = 0; i < history.size(); i++)
+        {
+            System.out.println("Элемент в истории: " + (i + 1));
+            System.out.println(history.get(i).toString());
+        }
+
+        taskManager.getTaskByID(3);
+
+        for (int i = 0; i < history.size(); i++)
+        {
+            System.out.println("Элемент в истории: " + (i + 1));
+            System.out.println(history.get(i).toString());
+        }
+
+        /*for (int i = 0; i < history.size(); i++){
+            System.out.println(history.get(i).toString());
+        }*/
+
+
+        /*show(taskManager);
         taskManager.deleteAllSubTasks();
         System.out.println("Subtasks clearing---------------------------------------------------------------");
         show(taskManager);
@@ -41,7 +91,7 @@ public class Main {
         show(taskManager);
         System.out.println("delete all tasks---------------------------------------------------------------");
         taskManager.deleteAllTasks();
-        show(taskManager);
+        show(taskManager);*/
     }
 
     public static void show(TaskManager taskManager) {

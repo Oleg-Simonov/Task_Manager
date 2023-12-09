@@ -24,4 +24,13 @@ public class Epic extends Task{
     public void setSubTaskIDs(ArrayList<Integer> subTaskIDs) {
         this.subTaskIDs = subTaskIDs;
     }
+
+    @Override
+    public String toString(){
+        return "ID in class = " + this.id + "\n" +
+                "epicName = " + this.name + "\n" +
+                "epicDescription = " + this.description + "\n" +
+                "epicStatus = " + this.status + "\n" +
+                "epicConsistsSubTasks = " + this.subTaskIDs + "\n";
+    }
 }
