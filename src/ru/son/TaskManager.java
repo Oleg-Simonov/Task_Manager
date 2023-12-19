@@ -1,3 +1,5 @@
+package ru.son;
+
 import java.util.*;
 
 public interface TaskManager {
@@ -26,11 +28,11 @@ public interface TaskManager {
 
     public SubTask getSubTaskByID(int id);
 
-    public boolean updateTask(Task newTask, int taskID);
+    public void updateTask(Task newTask, int taskID);
 
-    public boolean updateEpic(Epic newEpic, int epicID);
+    public void updateEpic(Epic newEpic, int epicID);
 
-    public boolean updateSubTask(SubTask newSubTask, int subTaskID);
+    public void updateSubTask(SubTask newSubTask, int subTaskID);
 
     public void deleteTask(int id);
 
@@ -38,7 +40,7 @@ public interface TaskManager {
 
     public void deleteSubTask(int id);
 
-    public LinkedList<Task> history();
+    public List<Task> history();
 
     public ArrayList<SubTask> getSubTasksOfEpic(int epicID);
 }

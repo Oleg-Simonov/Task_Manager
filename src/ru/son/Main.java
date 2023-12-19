@@ -1,10 +1,12 @@
-import java.util.LinkedList;
+package ru.son;
+
+import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
-
         String taskName = "taskName";
         String taskDescription = "taskDescription";
         String epicName = "epicName";
@@ -12,9 +14,18 @@ public class Main {
         String subTaskName = "subTaskName";
         String subTaskDescription = "subTaskDescription";
 
-        //TaskManager taskManager = new InMemoryTaskManager();
-        TaskManager taskManager = Managers.getDefault();
-        //HistoryManager historyManager = new InMemoryHistoryManager();
+        String separator = File.separator;
+        File taskFile = new File("D:" + separator + "programming" + separator + "Java" + separator + "tasker" + separator + "My_tasks.csv");
+
+        //TaskManager taskManager = Managers.getDefault();
+        //TaskManager taskManager = new FileBackedTaskManager(taskFile);
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(taskFile);
+
+        //для загрузки из файла
+        /*taskManager.loadFromFile();
+        showInConsole(taskManager);*/
+
+        //для записи в файл
         for (int i = 0; i < 7; i++)
             taskManager.createNewTask(new Task(taskName + (i + 1), taskDescription + (i + 1), TaskStatus.NEW));
 
@@ -25,8 +36,9 @@ public class Main {
             for (int i = 0; i < 3; i++)
                 taskManager.createNewSubTask(new SubTask(epicKey, subTaskName + (i + 1), subTaskDescription + (i + 1), TaskStatus.NEW));
         }
-        show(taskManager);
 
+        taskManager.createNewEpic(new Epic("qwer_name", "qwer_desctript"));
+        taskManager.createNewSubTask(new SubTask(28, "qwer_saba", "eto_qwer_saba", TaskStatus.DONE));
 
         taskManager.getTaskByID(3);
         taskManager.getTaskByID(5);
@@ -37,39 +49,10 @@ public class Main {
         taskManager.getSubTaskByID(20);
         taskManager.getSubTaskByID(21);
         taskManager.getSubTaskByID(19);
-        taskManager.getSubTaskByID(20);
-        /*taskManager.getSubTaskByID(22);
-        taskManager.getSubTaskByID(23);
-        taskManager.getSubTaskByID(24);*/
+        taskManager.getSubTaskByID(29);
 
-        LinkedList history = taskManager.history();
-        System.out.println("Size " + history.size());
+        taskManager.updateSubTask(new SubTask(10, "New saba", "New descript", TaskStatus.IN_PROGRESS), 19);
 
-        for (int i = 0; i < history.size(); i++)
-        {
-            System.out.println("Элемент в истории: " + (i + 1));
-            System.out.println(history.get(i).toString());
-        }
-
-        taskManager.getSubTaskByID(21);
-
-        for (int i = 0; i < history.size(); i++)
-        {
-            System.out.println("Элемент в истории: " + (i + 1));
-            System.out.println(history.get(i).toString());
-        }
-
-        taskManager.getTaskByID(3);
-
-        for (int i = 0; i < history.size(); i++)
-        {
-            System.out.println("Элемент в истории: " + (i + 1));
-            System.out.println(history.get(i).toString());
-        }
-
-        /*for (int i = 0; i < history.size(); i++){
-            System.out.println(history.get(i).toString());
-        }*/
 
 
         /*show(taskManager);
@@ -77,13 +60,13 @@ public class Main {
         System.out.println("Subtasks clearing---------------------------------------------------------------");
         show(taskManager);
         System.out.println("add new subTask 1---------------------------------------------------------------");
-        taskManager.createNewSubTask(new SubTask(8, subTaskName + 1, subTaskDescription + 1, TaskStatus.IN_PROGRESS));
+        taskManager.createNewSubTask(new ru.son.SubTask(8, subTaskName + 1, subTaskDescription + 1, ru.son.TaskStatus.IN_PROGRESS));
         show(taskManager);
         System.out.println("add new subTask 2---------------------------------------------------------------");
-        taskManager.createNewSubTask(new SubTask(8, subTaskName + 2, subTaskDescription + 2, TaskStatus.NEW));
+        taskManager.createNewSubTask(new ru.son.SubTask(8, subTaskName + 2, subTaskDescription + 2, ru.son.TaskStatus.NEW));
         show(taskManager);
         System.out.println("updating subTask---------------------------------------------------------------");
-        taskManager.updateSubTask(new SubTask(8, "UpdatedSubtaskName", "UpdatedSubtaskDescription", TaskStatus.NEW), 28);
+        taskManager.updateSubTask(new ru.son.SubTask(8, "UpdatedSubtaskName", "UpdatedSubtaskDescription", ru.son.TaskStatus.NEW), 28);
         show(taskManager);
         System.out.println("deleting subTask, epic---------------------------------------------------------------");
         taskManager.deleteSubTask(28);
@@ -94,7 +77,7 @@ public class Main {
         show(taskManager);*/
     }
 
-    public static void show(TaskManager taskManager) {
+    public static void showInConsole(FileBackedTaskManager taskManager) {
         for (Map.Entry<Integer, Task> enrtyInTasks : taskManager.getAllTasks().entrySet()) {
             System.out.println("ID in map = " + enrtyInTasks.getKey());
             System.out.println("\tID in class = " + enrtyInTasks.getValue().getId());
@@ -122,5 +105,10 @@ public class Main {
                 }
             }
         }
+        System.out.println();
+        for(Task task :taskManager.historyManager.getHistory()){
+            System.out.print(task.toString());
+        }
+        //System.out.println(taskManager.historyManager.getHistory().toString());
     }
 }

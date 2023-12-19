@@ -1,22 +1,23 @@
+package ru.son;
+
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Epic> epics;
-    private HashMap<Integer, SubTask> subTasks;
-    //private LinkedList<Task> historyList;
-    HistoryManager historyManager;
+    protected HashMap<Integer, Task> tasks;
+    protected HashMap<Integer, Epic> epics;
+    protected HashMap<Integer, SubTask> subTasks;
+    protected HistoryManager historyManager;
 
     InMemoryTaskManager(){
         this.id = 0;
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
-        //this.historyList = new LinkedList<>();
-        this.historyManager = Managers.getDefaultHistry();
+        this.historyManager = Managers.getDefaultHistory();
     }
 
     @Override
@@ -81,69 +82,46 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskByID(int id) {
-        /*if (this.historyList.size()<10)
-            this.historyList.add(this.tasks.get(id));
-        else {
-            this.historyList.removeFirst();
-            this.historyList.add(this.tasks.get(id));
-        }*/
         historyManager.addTask(this.tasks.get(id));
         return this.tasks.get(id);
     }
 
     @Override
     public Epic getEpicByID(int id) {
-        /*if (this.historyList.size()<10)
-            this.historyList.add(this.epics.get(id));
-        else {
-            this.historyList.removeFirst();
-            this.historyList.add(this.epics.get(id));
-        }*/
         historyManager.addTask(this.epics.get(id));
         return this.epics.get(id);
     }
 
     @Override
     public SubTask getSubTaskByID(int id) {
-       /*if (this.historyList.size()<10)
-            this.historyList.add(this.subTasks.get(id));
-        else {
-            this.historyList.removeFirst();
-            this.historyList.add(this.subTasks.get(id));
-        }*/
         historyManager.addTask(this.subTasks.get(id));
         return this.subTasks.get(id);
     }
 
     @Override
-    public boolean updateTask(Task newTask, int taskID) {
+    public void updateTask(Task newTask, int taskID) {
         if(this.tasks.containsKey(taskID)) {
             this.tasks.put(taskID, newTask);
-            return true;
-        }
-        return false;
+        } else System.out.println("task not found");
     }
 
     @Override
-    public boolean updateEpic(Epic newEpic, int epicID) {
+    public void updateEpic(Epic newEpic, int epicID) {
         if(this.epics.containsKey(epicID)) {
             this.epics.put(epicID, newEpic);
-            return true;
-        }
-        return false;
+        } else System.out.println("task not found");
     }
 
     @Override
-    public boolean updateSubTask(SubTask newSubTask, int subTaskID) {
+    public void updateSubTask(SubTask newSubTask, int subTaskID) {
         if(newSubTask.getEpicID() == this.subTasks.get(subTaskID).getEpicID()) //не даем менять эпик
         {
             if(this.subTasks.containsKey(subTaskID)) {
+                newSubTask.setId(subTaskID);
                 this.subTasks.put(subTaskID, newSubTask);
                 updateEpicStatus(newSubTask.getEpicID());
-                return true;
-            }
-        }
-        return false;
+            } else System.out.println("task not found");
+        } else System.out.println("epic cannot be changed");
     }
 
     @Override
@@ -179,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public LinkedList<Task> history() {
+    public List<Task> history() {
         return historyManager.getHistory();
     }
 
@@ -197,10 +175,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private boolean areAllSubTasksNew(ArrayList taskIDs){
-        for (int i = 0; i < taskIDs.size(); i++)
-            if(this.subTasks.get(taskIDs.get(i)).getStatus() != TaskStatus.NEW)
-                return false;
-        return true;
+        if(this.subTasks.size() == 0) return true;
+        else {
+            for (int i = 0; i < taskIDs.size(); i++) {
+                if(this.subTasks.get(taskIDs.get(i)).getStatus() != TaskStatus.NEW)
+                    return false;
+            }
+            return true;
+        }
     }
 
     private boolean areAllSubTasksDone(ArrayList taskIDs){

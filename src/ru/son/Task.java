@@ -1,3 +1,5 @@
+package ru.son;
+
 public class Task {
     protected int id;
     protected String name;
@@ -8,10 +10,29 @@ public class Task {
     }
 
     public Task(String name, String description, TaskStatus status) {
-        this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
+    }
+
+    public Task(String[] arr) {
+        this.id = Integer.parseInt(arr[0]);
+        this.name = arr[2];
+        this.description = arr[4];
+        switch (arr[3]){
+            case "NEW":
+                this.status = TaskStatus.NEW;
+                break;
+            case "IN_PROGRESS":
+                this.status = TaskStatus.IN_PROGRESS;
+                break;
+            case "DONE":
+                this.status = TaskStatus.DONE;
+                break;
+            default:
+                System.out.println("task constructor error");
+                break;
+        }
     }
 
     public int getId() {
@@ -48,9 +69,10 @@ public class Task {
 
     @Override
     public String toString(){
-        return "ID in class = " + this.id + "\n" +
-                "taskName = " + this.name + "\n" +
-                "taskDescription = " + this.description + "\n" +
-                "taskStatus = " + this.status + "\n";
+//        return "ID in class = " + this.id + "\n" +
+//                "taskName = " + this.name + "\n" +
+//                "taskDescription = " + this.description + "\n" +
+//                "taskStatus = " + this.status + "\n";
+        return this.id + "," + TaskType.TASK + "," + this.name + "," + this.status + "," + this.description + "\n";
     }
 }
